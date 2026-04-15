@@ -1,0 +1,189 @@
+openapi: 3.0.3
+
+info:
+  title: measurement-svc
+  version: 1.0.0
+  license:
+    name: UNLICENSED
+
+security: []
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /measurements:
+    post:
+      summary: Save measurements
+      operationId: createMeasurement
+      tags:
+        - Measurements
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMeasurementRequest'
+      responses:
+        '200':
+          description: Measurements saved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /measurement-report:
+    get:
+      summary: Get measurement report
+      operationId: getMeasurementReport
+      tags:
+        - Reports
+      parameters:
+        - name: from
+          in: query
+          required: true
+          description: Start of time range (inclusive)
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          required: true
+          description: End of time range (inclusive)
+          schema:
+            type: string
+            format: date-time
+        - name: sourceIds
+          in: query
+          required: false
+          description: List of measurement source identifiers. If omitted, measurements from all sources are returned. An empty list is invalid.
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          example:
+            - station-01
+            - station-02
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            example: 100
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            example: 0
+      responses:
+        '200':
+          description: Measurement report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasurementReportResponse'
+        '400':
+          description: Invalid query params
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    CreateMeasurementRequest:
+      type: object
+      required:
+        - sourceId
+        - measuredAt
+        - values
+      properties:
+        sourceId:
+          type: string
+          example: station-01
+        measuredAt:
+          type: string
+          format: date-time
+          example: '2026-03-30T10:15:00Z'
+        values:
+          type: object
+          description: Measured values by key
+          additionalProperties:
+            type: number
+          example:
+            temperature: 1200.5
+            pressure: 2.4
+            humidity: 18.2
+    SuccessResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          example: ok
+
+    MeasurementReportItem:
+      type: object
+      required:
+        - id
+        - measuredAt
+        - values
+      properties:
+        id:
+          type: string
+          example: msr_01JQ9ZK8Y7ABCDEF1234567890
+        sourceId:
+          type: string
+          example: furnace-01
+        measuredAt:
+          type: string
+          format: date-time
+          example: '2026-03-30T10:15:00Z'
+        values:
+          type: object
+          additionalProperties:
+            type: number
+          example:
+            temperature: 1200.5
+            pressure: 2.4
+            humidity: 18.2
+
+    MeasurementReportResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeasurementReportItem'
+        total:
+          type: integer
+          format: int32
+          example: 1
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: invalid request

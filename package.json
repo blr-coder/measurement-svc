@@ -1,0 +1,17 @@
+{
+  "name": "measurement-svc-v01",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "docs:lint": "redocly lint openapi.yaml",
+    "docs:build": "redocly build-docs openapi.yaml -o docs/index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@redocly/cli": "^2.25.3"
+  }
+}
