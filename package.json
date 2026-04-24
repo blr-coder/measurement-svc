@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "node src/server.js",
     "docs:lint": "redocly lint openapi.yaml",
-    "docs:build": "redocly build-docs openapi.yaml -o docs/index.html"
+    "docs:build": "redocly build-docs openapi.yaml -o docs/index.html",
+    "test:api": "node --test ./test/api/measurements.test.js"
   },
   "keywords": [],
   "author": "",

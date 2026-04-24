@@ -1,4 +1,5 @@
 const { URL } = require('node:url');
+const { sendText } = require('./httpUtils');
 
 class Router {
     constructor() {
@@ -48,7 +49,7 @@ class Router {
         const method = request.method?.toUpperCase();
 
         if (!this.validMethods.has(method)) {
-            return this.sendText(response, 405, 'method not allowed');
+            return sendText(response, 405, 'method not allowed');
         }
 
         const url = new URL(request.url, 'http://localhost');
@@ -59,32 +60,16 @@ class Router {
         );
 
         if (exactRoute) {
-            return exactRoute.handler(request, response, this);
+            return exactRoute.handler(request, response);
         }
 
         const pathExists = this.routes.some(route => route.path === pathname);
 
         if (pathExists) {
-            return this.sendText(response, 405, 'method not allowed');
+            return sendText(response, 405, 'method not allowed');
         }
 
-        return this.sendText(response, 404, 'not found');
-    }
-
-    sendText(response, statusCode, message) {
-        response.writeHead(statusCode, {
-            'Content-Type': 'text/plain; charset=utf-8',
-        });
-
-        response.end(message);
-    }
-
-    sendJson(response, statusCode, payload) {
-        response.writeHead(statusCode, {
-            'Content-Type': 'application/json; charset=utf-8',
-        });
-
-        response.end(JSON.stringify(payload));
+        return sendText(response, 404, 'not found');
     }
 }
 

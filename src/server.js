@@ -1,11 +1,31 @@
 const http = require('node:http');
 
-function createServer(router) {
+const { createApp } = require('./app');
+const config = require('./config');
+
+function createServer() {
+    const app = createApp();
+
     return http.createServer((request, response) => {
-        router.handle(request, response);
+        app.handle(request, response);
     });
+}
+
+function startServer() {
+    const server = createServer();
+
+    server.listen(config.port, () => {
+        console.log(`Server is running on http://localhost:${config.port}`);
+    });
+
+    return server;
 }
 
 module.exports = {
     createServer,
+    startServer,
 };
+
+if (require.main === module) {
+    startServer();
+}

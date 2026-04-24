@@ -1,5 +1,7 @@
-function getMeasurementsReport(request, response, router) {
-    return router.sendJson(response, 200, {
+const { sendJson } = require('../httpUtils');
+
+function getMeasurementsReport(request, response) {
+    return sendJson(response, 200, {
         items: [],
         total: 0,
     });
