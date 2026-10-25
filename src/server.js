@@ -14,8 +14,8 @@ function createServer() {
 function startServer() {
     const server = createServer();
 
-    server.listen(config.port, () => {
-        console.log(`Server is running on http://localhost:${config.port}`);
+    server.listen(config.app.port, () => {
+        console.log(`Server is running on http://localhost:${config.app.port}`);
     });
 
     return server;

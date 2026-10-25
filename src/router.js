@@ -1,5 +1,16 @@
 const { URL } = require('node:url');
-const { sendText } = require('./httpUtils');
+const { sendText, sendJson } = require('./httpUtils');
+const { HttpError } = require('./errors');
+
+function handleError(response, error) {
+    if (error instanceof HttpError) {
+        console.warn(`${error.statusCode} ${error.message}`);
+        return sendJson(response, error.statusCode, { message: error.message });
+    }
+
+    console.error(error);
+    return sendJson(response, 500, { message: 'internal server error' });
+}
 
 class Router {
     constructor() {
@@ -60,7 +71,11 @@ class Router {
         );
 
         if (exactRoute) {
-            return exactRoute.handler(request, response);
+            try {
+                return await exactRoute.handler(request, response);
+            } catch (error) {
+                return handleError(response, error);
+            }
         }
 
         const pathExists = this.routes.some(route => route.path === pathname);

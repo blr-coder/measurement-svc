@@ -4,6 +4,10 @@
   "main": "main.js",
   "scripts": {
     "start": "node src/server.js",
+    "up-db": "docker compose up -d postgres",
+    "run-migrations": "node-pg-migrate up -f migrate.config.js",
+    "rollback-migration": "node-pg-migrate down -f migrate.config.js",
+    "create-migration": "node-pg-migrate create -f migrate.config.js",
     "docs:lint": "redocly lint openapi.yaml",
     "docs:build": "redocly build-docs openapi.yaml -o docs/index.html",
     "test:api": "node --test ./test/api/measurements.test.js"
@@ -14,5 +18,9 @@
   "description": "",
   "devDependencies": {
     "@redocly/cli": "^2.25.3"
+  },
+  "dependencies": {
+    "node-pg-migrate": "^9.0.0",
+    "pg": "^8.23.0"
   }
 }

@@ -14,6 +14,19 @@ function getPort() {
     return port;
 }
 
-module.exports = {
-    port: getPort(),
+const config = {
+    app: {
+        port: getPort(),
+    },
+
+    postgres: {
+        host: 'localhost',
+        port: 3499,
+        user: 'measurement',
+        password: 'measurement',
+        database: 'measurement',
+        schema: 'measurement',
+    },
 };
+
+module.exports = config;

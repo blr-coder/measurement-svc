@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: measurement-postgres
+
+    environment:
+      POSTGRES_USER: measurement
+      POSTGRES_PASSWORD: measurement
+      POSTGRES_DB: measurement
+
+    ports:
+      - "3499:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
